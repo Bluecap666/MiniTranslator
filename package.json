@@ -1,0 +1,47 @@
+{
+  "name": "minitranslator",
+  "version": "1.0.0",
+  "description": "磁吸式翻译小工具",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": ["translator", "electron", "desktop"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.minitranslator.app",
+    "productName": "迷你翻译小工具",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "config-window.html",
+      "renderer.js",
+      "styles.css",
+      "config.css"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-Portable.exe"
+    },
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "asarUnpack": []
+  }
+}

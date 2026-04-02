@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Translator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 标题栏 -->
+    <div class="title-bar">
+      <div class="app-title">迷你翻译小工具 By Bluecap</div>
+      <div class="window-controls">
+        <button class="control-btn settings-btn" id="settingsBtn" title="设置">
+          ⚙️
+        </button>
+        <button class="control-btn minimize-btn" id="minimizeBtn" title="最小化">
+          −
+        </button>
+        <button class="control-btn close-btn" id="closeBtn" title="关闭">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="input-section">
+      <textarea 
+        id="inputText" 
+        placeholder="输入要翻译的文本..."
+        spellcheck="false"
+      ></textarea>
+      <div class="input-toolbar">
+        <button id="clearBtn" class="clear-btn" title="清空">🗑️ 清空</button>
+        <button id="translateBtn" class="translate-btn">翻译</button>
+      </div>
+    </div>
+
+    <!-- 输出区域 -->
+    <div class="output-section">
+      <div id="outputText" class="output-text"></div>
+    </div>
+
+    <!-- 右下角调整手柄 -->
+    <div class="resize-handle" id="resizeHandle"></div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

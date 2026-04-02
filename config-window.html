@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API 配置 - Mini Translator</title>
+  <link rel="stylesheet" href="config.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 标题栏 -->
+    <div class="header">
+      <h1>⚙️ API 配置</h1>
+      <div class="window-controls">
+        <button class="icon-btn minimize-btn" id="minimizeBtn" title="最小化">−</button>
+        <button class="icon-btn close-btn" id="closeBtn" title="关闭">×</button>
+      </div>
+    </div>
+
+    <!-- 配置内容区 -->
+    <div class="content">
+      <!-- 提示区域 -->
+      <div class="form-group" style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <p style="margin: 0; color: #667eea; font-size: 13px;">
+          💡 <strong>使用说明：</strong>填写下方的 API 配置信息。
+          Google 翻译无需配置即可使用，其他服务需要申请 API Key。
+          配置完成后，可在主窗口下拉框中选择对应的翻译服务（包括 AI 翻译）。
+        </p>
+      </div>
+
+      <!-- 全局快捷键 -->
+      <div class="shortcut-card">
+        <h3>⌨️ 全局快捷键</h3>
+        <div class="shortcut-item">
+          <kbd>Ctrl+Shift+X</kbd>
+          <span>显示/隐藏主窗口</span>
+        </div>
+      </div>
+      
+      <div id="baiduConfig" class="service-config">
+        <h3>📦 百度翻译</h3>
+        <div class="form-group">
+          <label>APP ID</label>
+          <input type="text" id="baiduAppId" placeholder="请输入百度翻译 APP ID">
+        </div>
+        <div class="form-group">
+          <label>密钥</label>
+          <input type="password" id="baiduSecret" placeholder="请输入百度翻译密钥">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="baidu">测试百度翻译</button>
+          <span id="baiduTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://fanyi-api.baidu.com/" target="_blank">https://fanyi-api.baidu.com/</a></p>
+      </div>
+
+      <div id="youdaoConfig" class="service-config">
+        <h3>📦 有道翻译</h3>
+        <div class="form-group">
+          <label>应用 ID</label>
+          <input type="text" id="youdaoAppId" placeholder="请输入有道翻译应用 ID">
+        </div>
+        <div class="form-group">
+          <label>应用密钥</label>
+          <input type="password" id="youdaoSecret" placeholder="请输入有道翻译应用密钥">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="youdao">测试有道翻译</button>
+          <span id="youdaoTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://ai.youdao.com/" target="_blank">https://ai.youdao.com/</a></p>
+      </div>
+
+      <div id="googleConfig" class="service-config">
+        <h3>🌐 Google 翻译</h3>
+        <div class="info-box">
+          ✨ Google 翻译无需配置，可直接使用
+        </div>
+        <p class="help-text" style="color: #67ea78;">✓ 免费服务，支持全球 100+ 种语言</p>
+      </div>
+      
+      <div id="caiyunConfig" class="service-config">
+        <h3>☁️ 彩云小译</h3>
+        <div class="form-group">
+          <label>API Token</label>
+          <input type="text" id="caiyunToken" placeholder="请输入彩云小译 API Token">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="caiyun">测试彩云小译</button>
+          <span id="caiyunTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://dashboard.caiyuntrans.com" target="_blank">https://dashboard.caiyuntrans.com</a></p>
+      </div>
+      
+      <div id="deeplConfig" class="service-config">
+        <h3>🎯 DeepL</h3>
+        <div class="form-group">
+          <label>API Key</label>
+          <input type="text" id="deeplKey" placeholder="请输入 DeepL API Key">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="deepl">测试 DeepL</button>
+          <span id="deeplTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://www.deepl.com/pro-api" target="_blank">https://www.deepl.com/pro-api</a></p>
+        <p class="help-text">免费额度：50 万字符/月</p>
+      </div>
+      
+      <div id="tencentConfig" class="service-config">
+        <h3>🐧 腾讯翻译</h3>
+        <div class="form-group">
+          <label>Secret ID</label>
+          <input type="text" id="tencentSecretId" placeholder="请输入腾讯云 Secret ID">
+        </div>
+        <div class="form-group">
+          <label>Secret Key</label>
+          <input type="password" id="tencentSecretKey" placeholder="请输入腾讯云 Secret Key">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="tencent">测试腾讯翻译</button>
+          <span id="tencentTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：访问腾讯云控制台 → 访问管理 → API 密钥管理</p>
+        <p class="help-text">免费额度：500 万字符/月</p>
+      </div>
+      
+      <div id="qwenConfig" class="service-config">
+        <h3>🤖 通义千问（AI 翻译）</h3>
+        <div class="form-group">
+          <label>API Key</label>
+          <input type="text" id="qwenApiKey" placeholder="请输入阿里云 DashScope API Key">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="qwen">测试通义千问</button>
+          <span id="qwenTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://dashscope.console.aliyun.com/" target="_blank">https://dashscope.console.aliyun.com/</a></p>
+        <p class="help-text">特点：基于大模型的智能翻译，支持上下文理解</p>
+      </div>
+      
+      <div id="ernieConfig" class="service-config">
+        <h3>🤖 文心一言（AI 翻译）</h3>
+        <div class="form-group">
+          <label>API Key</label>
+          <input type="text" id="ernieApiKey" placeholder="请输入百度智能云 API Key">
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button class="btn btn-test test-service-btn" data-service="ernie">测试文心一言</button>
+          <span id="ernieTestStatus" class="test-status"></span>
+        </div>
+        <p class="help-text">获取方式：<a href="https://console.bce.baidu.com/ai/" target="_blank">https://console.bce.baidu.com/ai/</a></p>
+        <p class="help-text">特点：百度大模型，中文翻译质量优秀</p>
+      </div>
+    </div>
+
+    <!-- 底部按钮 -->
+    <div class="footer">
+      <button id="cancelBtn" class="btn btn-secondary">取消</button>
+      <button id="saveConfigBtn" class="btn btn-primary">保存配置</button>
+    </div>
+  </div>
+
+  <script>
+    // 等待 DOM 加载完成
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[Config Window] DOM 已加载');
+      
+      // 窗口控制 - 使用 preload.js 暴露的 API
+      const closeBtn = document.getElementById('closeBtn');
+      const minimizeBtn = document.getElementById('minimizeBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const saveConfigBtn = document.getElementById('saveConfigBtn');
+      
+      console.log('[Config Window] DOM 已加载');
+      console.log('[Config Window] 按钮元素:', {
+        closeBtn: !!closeBtn,
+        minimizeBtn: !!minimizeBtn,
+        cancelBtn: !!cancelBtn,
+        saveConfigBtn: !!saveConfigBtn
+      });
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          console.log('[Config Window] 点击关闭按钮');
+          window.electronAPI.closeConfigWindow();
+        });
+      }
+      
+      if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', () => {
+          console.log('[Config Window] 点击最小化按钮');
+          window.electronAPI.minimizeConfigWindow();
+        });
+      }
+      
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+          console.log('[Config Window] 点击取消按钮');
+          window.electronAPI.closeConfigWindow();
+        });
+      }
+      
+      // 保存配置
+      if (saveConfigBtn) {
+        saveConfigBtn.addEventListener('click', async () => {
+          console.log('[Config Window] 点击保存配置按钮');
+          const config = {
+            service: 'baidu',  // 默认使用百度，用户可以在主窗口切换
+            baidu: {
+              appId: document.getElementById('baiduAppId').value,
+              secret: document.getElementById('baiduSecret').value
+            },
+            youdao: {
+              appId: document.getElementById('youdaoAppId').value,
+              secret: document.getElementById('youdaoSecret').value
+            },
+            google: {},
+            caiyun: {
+              token: document.getElementById('caiyunToken').value
+            },
+            deepl: {
+              key: document.getElementById('deeplKey').value
+            },
+            tencent: {
+              secretId: document.getElementById('tencentSecretId').value,
+              secretKey: document.getElementById('tencentSecretKey').value
+            },
+            qwen: {
+              apiKey: document.getElementById('qwenApiKey').value
+            },
+            ernie: {
+              apiKey: document.getElementById('ernieApiKey').value
+            }
+          };
+          
+          console.log('[Config Window] 准备保存配置:', JSON.stringify(config, null, 2));
+          
+          try {
+            const result = await window.electronAPI.saveConfig(config);
+            console.log('[Config Window] 保存结果:', result);
+            
+            if (result.success) {
+              alert('✓ 配置已保存！');
+              setTimeout(() => {
+                window.electronAPI.closeConfigWindow();
+              }, 500);
+            } else {
+              alert('✗ 保存失败：' + result.error);
+            }
+          } catch (error) {
+            console.error('[Config Window] 保存配置出错:', error);
+            alert('✗ 保存失败：' + error.message);
+          }
+        });
+      }
+      
+      // 为每个服务的测试按钮绑定事件
+      document.querySelectorAll('.test-service-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const service = e.target.getAttribute('data-service');
+          console.log('[Config Window] 点击测试按钮:', service);
+          
+          // 获取对应服务的配置
+          let hasConfig = false;
+          let configFields = {};
+          
+          if (service === 'baidu') {
+            configFields.appId = document.getElementById('baiduAppId').value;
+            configFields.secret = document.getElementById('baiduSecret').value;
+            hasConfig = configFields.appId && configFields.secret;
+          } else if (service === 'youdao') {
+            configFields.appId = document.getElementById('youdaoAppId').value;
+            configFields.secret = document.getElementById('youdaoSecret').value;
+            hasConfig = configFields.appId && configFields.secret;
+          } else if (service === 'caiyun') {
+            configFields.token = document.getElementById('caiyunToken').value;
+            hasConfig = configFields.token;
+          } else if (service === 'deepl') {
+            configFields.key = document.getElementById('deeplKey').value;
+            hasConfig = configFields.key;
+          } else if (service === 'tencent') {
+            configFields.secretId = document.getElementById('tencentSecretId').value;
+            configFields.secretKey = document.getElementById('tencentSecretKey').value;
+            hasConfig = configFields.secretId && configFields.secretKey;
+          } else if (service === 'qwen') {
+            configFields.apiKey = document.getElementById('qwenApiKey').value;
+            hasConfig = configFields.apiKey;
+          } else if (service === 'ernie') {
+            configFields.apiKey = document.getElementById('ernieApiKey').value;
+            hasConfig = configFields.apiKey;
+          }
+          
+          if (!hasConfig) {
+            alert('⚠ 请先填写该服务的 API 配置信息');
+            return;
+          }
+          
+          // 先加载现有配置，再更新当前服务的配置
+          let existingConfig = {};
+          try {
+            const result = await window.electronAPI.loadConfig();
+            if (result.success && result.config) {
+              existingConfig = result.config;
+            }
+          } catch (error) {
+            console.error('[Config Window] 加载现有配置失败:', error);
+          }
+          
+          // 合并配置
+          const mergedConfig = {
+            ...existingConfig,
+            service: service
+          };
+          
+          // 只更新当前服务的配置
+          if (service === 'baidu') {
+            mergedConfig.baidu = configFields;
+          } else if (service === 'youdao') {
+            mergedConfig.youdao = configFields;
+          } else if (service === 'caiyun') {
+            mergedConfig.caiyun = configFields;
+          } else if (service === 'deepl') {
+            mergedConfig.deepl = configFields;
+          } else if (service === 'tencent') {
+            mergedConfig.tencent = configFields;
+          } else if (service === 'qwen') {
+            mergedConfig.qwen = configFields;
+          } else if (service === 'ernie') {
+            mergedConfig.ernie = configFields;
+          }
+          
+          // 保存合并后的配置
+          try {
+            await window.electronAPI.saveConfig(mergedConfig);
+            console.log('[Config Window] 配置已合并保存');
+          } catch (error) {
+            console.error('[Config Window] 保存配置失败:', error);
+          }
+          
+          // 执行测试
+          const originalText = e.target.textContent;
+          e.target.disabled = true;
+          e.target.textContent = '测试中...';
+          
+          // 获取状态显示元素
+          const statusSpan = document.getElementById(service + 'TestStatus');
+          
+          try {
+            const result = await window.electronAPI.translate('Hello', 'en', 'zh', service);
+            console.log('[Config Window] 测试结果:', result);
+            
+            if (result.success) {
+              // 显示成功状态
+              if (statusSpan) {
+                statusSpan.className = 'test-status success';
+                statusSpan.textContent = '✓ 可用';
+              }
+              // 5 秒后清除状态
+              setTimeout(() => {
+                if (statusSpan) {
+                  statusSpan.textContent = '';
+                  statusSpan.className = 'test-status';
+                }
+              }, 5000);
+            } else {
+              // 显示错误状态
+              if (statusSpan) {
+                statusSpan.className = 'test-status error';
+                statusSpan.textContent = '✗ ' + result.error;
+              }
+            }
+          } catch (error) {
+            console.error('[Config Window] 测试出错:', error);
+            if (statusSpan) {
+              statusSpan.className = 'test-status error';
+              statusSpan.textContent = '✗ ' + error.message;
+            }
+          } finally {
+            e.target.disabled = false;
+            e.target.textContent = originalText;
+          }
+        });
+      });
+      
+      // 加载配置（延迟 200ms 确保 DOM 完全渲染）
+      setTimeout(async () => {
+        console.log('[Config Window] 开始加载配置');
+        try {
+          const result = await window.electronAPI.loadConfig();
+          console.log('[Config Window] 加载配置结果:', result);
+          if (result.success && result.config) {
+            const config = result.config;
+            console.log('[Config Window] 配置对象:', JSON.stringify(config, null, 2));
+            
+            // 填充各服务配置 - 增强日志
+            if (config.baidu) {
+              const baiduAppId = document.getElementById('baiduAppId');
+              const baiduSecret = document.getElementById('baiduSecret');
+              if (baiduAppId) {
+                baiduAppId.value = config.baidu.appId || '';
+                console.log('[Config Window] 百度 APP ID:', config.baidu.appId);
+              }
+              if (baiduSecret) {
+                baiduSecret.value = config.baidu.secret || '';
+                console.log('[Config Window] 百度密钥:', config.baidu.secret);
+              }
+            }
+            if (config.youdao) {
+              const youdaoAppId = document.getElementById('youdaoAppId');
+              const youdaoSecret = document.getElementById('youdaoSecret');
+              if (youdaoAppId) youdaoAppId.value = config.youdao.appId || '';
+              if (youdaoSecret) youdaoSecret.value = config.youdao.secret || '';
+            }
+            if (config.caiyun) {
+              const caiyunToken = document.getElementById('caiyunToken');
+              if (caiyunToken) caiyunToken.value = config.caiyun.token || '';
+            }
+            if (config.deepl) {
+              const deeplKey = document.getElementById('deeplKey');
+              if (deeplKey) deeplKey.value = config.deepl.key || '';
+            }
+            if (config.tencent) {
+              const tencentSecretId = document.getElementById('tencentSecretId');
+              const tencentSecretKey = document.getElementById('tencentSecretKey');
+              if (tencentSecretId) tencentSecretId.value = config.tencent.secretId || '';
+              if (tencentSecretKey) tencentSecretKey.value = config.tencent.secretKey || '';
+            }
+            if (config.qwen) {
+              const qwenApiKey = document.getElementById('qwenApiKey');
+              if (qwenApiKey) qwenApiKey.value = config.qwen.apiKey || '';
+            }
+            if (config.ernie) {
+              const ernieApiKey = document.getElementById('ernieApiKey');
+              if (ernieApiKey) ernieApiKey.value = config.ernie.apiKey || '';
+            }
+            console.log('[Config Window] ✓ 所有配置加载完成');
+          }
+        } catch (error) {
+          console.error('[Config Window] 加载配置失败:', error);
+        }
+      }, 200);
+    });
+  </script>
+</body>
+</html>
