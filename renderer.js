@@ -11,6 +11,7 @@ if (minimizeBtn) {
 
 if (closeBtn) {
   closeBtn.addEventListener('click', () => {
+    // 关闭时隐藏到托盘，而不是退出程序
     window.electronAPI.closeWindow();
   });
 }

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -21,6 +21,8 @@ console.log('[Main] 配置文件路径:', configPath);
 
 let mainWindow;
 let configWindow;
+let tray = null; // 系统托盘图标
+let isQuitting = false; // 标记是否正在退出
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -46,6 +48,15 @@ function createWindow() {
   
   // 阻止任务栏图标
   mainWindow.setSkipTaskbar(false);
+  
+  // 拦截窗口关闭按钮，改为隐藏到托盘
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault(); // 阻止默认关闭行为
+      mainWindow.hide(); // 隐藏窗口
+      console.log('[Main] 窗口关闭被拦截，已隐藏到托盘');
+    }
+  });
 }
 
 // 创建配置窗口
@@ -85,19 +96,136 @@ function createConfigWindow() {
   });
 }
 
+// 创建系统托盘
+function createTray() {
+  // 创建托盘图标（使用 Electron 默认图标）
+  const { nativeImage } = require('electron');
+  
+  // 尝试加载自定义图标，如果不存在则使用默认图标
+  let trayIcon;
+  const iconPath = path.join(__dirname, 'favicon.ico');
+  
+  if (fs.existsSync(iconPath)) {
+    trayIcon = nativeImage.createFromPath(iconPath);
+  } else {
+    // 创建一个简单的默认图标（16x16 像素）
+    trayIcon = nativeImage.createEmpty();
+  }
+  
+  tray = new Tray(trayIcon);
+  
+  // 设置托盘提示文本
+  tray.setToolTip('迷你翻译小工具\n双击打开 | 右键菜单');
+  
+  // 创建托盘菜单
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示主窗口',
+      click: () => {
+        if (mainWindow) {
+          moveWindowToBottomRight(); // 移动到右下角
+          mainWindow.show();
+          mainWindow.focus();
+          mainWindow.setAlwaysOnTop(true);
+        }
+      }
+    },
+    {
+      label: '隐藏主窗口',
+      click: () => {
+        if (mainWindow && mainWindow.isVisible()) {
+          mainWindow.hide();
+        }
+      }
+    },
+    { type: 'separator' },
+    {
+      label: '打开配置',
+      click: () => {
+        createConfigWindow();
+      }
+    },
+    { type: 'separator' },
+    {
+      label: '退出程序',
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  ]);
+  
+  tray.setContextMenu(contextMenu);
+  
+  // 双击托盘图标显示/隐藏窗口
+  tray.on('double-click', () => {
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        moveWindowToBottomRight(); // 移动到右下角
+        mainWindow.show();
+        mainWindow.focus();
+        mainWindow.setAlwaysOnTop(true);
+      }
+    }
+  });
+  
+  // 单击托盘图标也可以显示窗口
+  tray.on('click', () => {
+    if (mainWindow && !mainWindow.isVisible()) {
+      moveWindowToBottomRight(); // 移动到右下角
+      mainWindow.show();
+      mainWindow.focus();
+      mainWindow.setAlwaysOnTop(true);
+    }
+  });
+  
+  console.log('[Main] 系统托盘已创建');
+}
+
+// 将窗口移动到屏幕右下角
+function moveWindowToBottomRight() {
+  if (!mainWindow) return;
+  
+  // 获取当前鼠标所在显示器的信息
+  const cursorPoint = screen.getCursorScreenPoint();
+  const currentDisplay = screen.getDisplayNearestPoint(cursorPoint);
+  
+  // 获取窗口大小
+  const [winWidth, winHeight] = mainWindow.getSize();
+  
+  // 计算右下角位置（留出一些边距）
+  const margin = 20; // 边距 20 像素
+  const x = currentDisplay.bounds.x + currentDisplay.bounds.width - winWidth - margin;
+  const y = currentDisplay.bounds.y + currentDisplay.bounds.height - winHeight - margin;
+  
+  // 设置窗口位置
+  mainWindow.setPosition(x, y);
+  
+  console.log(`[Main] 窗口已移动到右下角: (${x}, ${y})`);
+}
+
 // 注册全局快捷键
-const { globalShortcut } = require('electron');
+const { globalShortcut, screen } = require('electron');
 
 app.whenReady().then(() => {
   createWindow();
+  createTray(); // 创建系统托盘
 
   // 注册全局快捷键 Ctrl+Shift+X 显示/隐藏窗口
   globalShortcut.register('CommandOrControl+Shift+X', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
-    } else {
-      mainWindow.show();
-      mainWindow.setAlwaysOnTop(true);
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        // 先移动窗口到右下角
+        moveWindowToBottomRight();
+        // 然后显示窗口
+        mainWindow.show();
+        mainWindow.focus();
+        mainWindow.setAlwaysOnTop(true);
+      }
     }
   });
 
@@ -111,6 +239,25 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+// 阻止默认关闭窗口行为，改为隐藏到托盘
+app.on('before-quit', (event) => {
+  if (!isQuitting) {
+    event.preventDefault(); // 阻止退出
+    if (mainWindow) {
+      mainWindow.hide(); // 隐藏窗口
+    }
+  }
+});
+
+// 拦截窗口关闭事件，改为隐藏到托盘
+ipcMain.on('close-window', (event) => {
+  if (mainWindow) {
+    // 不真正关闭，只是隐藏窗口
+    mainWindow.hide();
+    console.log('[Main] 窗口已隐藏到托盘');
   }
 });
 
